@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Data\User\UserData;
 use App\Exceptions\User\UserDuplicatedMailException;
 use App\Exceptions\User\UserDuplicatedMailValidationException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserNotFoundValidationException;
+use App\Http\Controllers\Controller;
 use App\Http\Mappers\User\UserDataMapper;
 use App\Http\Requests\User\UserDeleteRequest;
 use App\Http\Requests\User\UserRequest;
 use App\Models\User;
 use App\Repository\User\UserRepository;
 use App\Services\User\UserManager;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {

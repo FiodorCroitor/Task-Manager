@@ -2,6 +2,7 @@
 
 namespace App\Services\Category;
 
+use App\Data\Category\CategoryData;
 use App\Exceptions\Category\CategoryNotFoundException;
 use App\Http\Requests\Category\CategoryDeleteRequest;
 use App\Http\Requests\Category\CategoryRequest;
@@ -38,10 +39,13 @@ class CategoryManager
             'name' => $request->name,
         ]);
     }
-    public function delete(Category $category , CategoryDeleteRequest $request)
+    public function delete(CategoryDeleteRequest $request): void
     {
-        $existedCategory = $this->categoryRepository->getByName($request->name);
-        if($existedCategory === null){
+        $categoryId = (int)$request->category_id;
+
+        $category = $this->categoryRepository->getById($categoryId);
+
+        if($category === null){
             throw  new CategoryNotFoundException();
         }
          $category->delete();

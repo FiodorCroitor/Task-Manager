@@ -7,21 +7,23 @@ use App\Exceptions\Product\ProductNotFoundException;
 use App\Http\Requests\Product\ProductDeleteRequest;
 use App\Http\Requests\Product\ProductRequest;
 use App\Models\Product;
+use App\Repository\Category\CategoryRepository;
 use App\Repository\Product\ProductRepository;
 
 class ProductManager
 {
     public ProductRepository $productRepository;
     public ProductData $productData;
-    public function __construct(ProductRepository $productRepository , ProductData $productData)
+    public CategoryRepository $categoryRepository;
+    public function __construct(ProductRepository $productRepository , ProductData $productData , CategoryRepository $categoryRepository)
     {
         $this->productRepository = $productRepository;
         $this->productData = $productData;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function store(ProductRequest $request , ProductData $productData): void
     {
-        //TODO: Implement store() method.
          $existedProduct = $this->categoryRepository->getById($productData->category_id);
 
 
@@ -43,9 +45,7 @@ class ProductManager
     }
     public function update(ProductRequest $request , ProductData $productData): void
     {
-        //TODO: Implement store() method.
         $existedProduct = $this->categoryRepository->getById($productData->category_id);
-
 
         if ($existedProduct === null) {
             throw new ProductNotFoundException();
@@ -61,8 +61,8 @@ class ProductManager
 
     public function delete(ProductDeleteRequest $request): void
     {
-        $product_id =(int)$request->priduct_id;
-        $product =$this->productRepository->getById($product_id);
+        $productId =(int)$request->product_id;
+        $product =$this->productRepository->getById($productId);
 
 
         if ($product === null) {
@@ -71,7 +71,7 @@ class ProductManager
         $product->delete();
     }
     //TODO: Implement delete() method.
-    public function deleteMediaFromProduct(ProductMediaDeleteRequest $request, Product $product): void
+    public function deleteMediaFromProduct(ProductDeleteRequest $request, Product $product): void
     {
         $existedAttachment = $this->attachmentsRepository->getById($product, (int)$request->id);
 

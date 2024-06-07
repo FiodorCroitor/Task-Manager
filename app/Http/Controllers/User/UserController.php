@@ -36,7 +36,7 @@ class UserController extends Controller
     {
         $user = $this->userRepository->getAllPaginatedWithFilters();
 
-        return view('user.index', compact('user'));;
+        return view('user.index', compact('user'));
     }
 
     public function store(UserRequest $request, UserData $userData)

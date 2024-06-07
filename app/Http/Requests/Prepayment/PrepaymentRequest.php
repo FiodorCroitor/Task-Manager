@@ -10,7 +10,7 @@ class PrepaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'subjectId' => ['required' , 'string'],
+            'productId' => ['required' , 'string'],
             'userId' => ['required' , 'string'],
         ];
     }

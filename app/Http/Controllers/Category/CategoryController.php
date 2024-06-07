@@ -12,7 +12,7 @@ use App\Models\Category;
 use App\Repository\Category\CategoryRepository;
 use App\Services\Category\CategoryManager;
 
-class CategoryController extends Controller
+final class CategoryController extends Controller
 {
     public CategoryRepository $categoryRepository;
     public CategoryData $categoryData;

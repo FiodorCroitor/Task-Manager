@@ -52,4 +52,8 @@ class UserRepository
     {
         return User::query()->get()->last();
     }
+    public function getAll()
+    {
+        return User::query()->get();
+    }
 }

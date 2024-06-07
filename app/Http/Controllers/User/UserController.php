@@ -15,7 +15,7 @@ use App\Models\User;
 use App\Repository\User\UserRepository;
 use App\Services\User\UserManager;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
     public UserRepository $userRepository;
     public UserManager $userManager;

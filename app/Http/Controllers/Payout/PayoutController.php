@@ -18,7 +18,7 @@ use App\Repository\Product\ProductRepository;
 use App\Repository\User\UserRepository;
 use App\Services\Payout\PayoutManager;
 
-class PayoutController extends Controller
+final class PayoutController extends Controller
 {
     public PayoutRepository $payoutRepository;
     public PayoutDataMapper $payoutDataMapper;

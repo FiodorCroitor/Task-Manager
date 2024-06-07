@@ -7,7 +7,9 @@ use App\Exceptions\Product\ProductNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductDeleteRequest;
 use App\Http\Requests\Product\ProductRequest;
+use App\Models\Category;
 use App\Models\Product;
+use App\Repository\Category\CategoryRepository;
 use App\Repository\Product\ProductRepository;
 use App\Services\Product\ProductManager;
 
@@ -15,11 +17,13 @@ class ProductController extends Controller
 {
     public ProductRepository $productRepository;
     public ProductManager $productManager;
+    public CategoryRepository $categoryRepository;
 
-    public function __construct(ProductRepository $productRepository, ProductManager $productManager)
+    public function __construct(ProductRepository $productRepository, ProductManager $productManager,CategoryRepository $categoryRepository)
     {
         $this->productRepository = $productRepository;
         $this->productManager = $productManager;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function index()
@@ -39,18 +43,18 @@ class ProductController extends Controller
             throw  new ProductNotFoundException();
         }
     }
-    //TODO Make edit function
-    /*
+
         public function edit(Product $product)
         {
             $categories = $this->categoryRepository->getAll();
 
             return view('product.edit', compact(['product', 'categories']));
         }
-    */
+
     public function show(Product $product)
     {
-        return view('product.show', compact('product'));
+        $categories = $this->categoryRepository->getAll();
+        return view('product.show', compact('product' , 'categories'));
     }
 
     public function update(ProductRequest $request, ProductData $productData)

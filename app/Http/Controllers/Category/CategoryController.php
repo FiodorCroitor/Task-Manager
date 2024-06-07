@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request)
     {
-        //TODO Fix 1
+
         $categoryData = $this->categoryDataMapper->mapFromRequestToNormalized($request);
         try {
             $this->categoryManager->store($request);

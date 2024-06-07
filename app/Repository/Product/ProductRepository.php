@@ -30,4 +30,8 @@ class ProductRepository
  {
      return Product::find($id);
  }
+ public function getAll()
+ {
+     return Product::query()->get();
+ }
 }

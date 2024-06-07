@@ -13,7 +13,7 @@ use App\Repository\Category\CategoryRepository;
 use App\Repository\Product\ProductRepository;
 use App\Services\Product\ProductManager;
 
-class ProductController extends Controller
+final class ProductController extends Controller
 {
     public ProductRepository $productRepository;
     public ProductManager $productManager;

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('prepayments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Product::class)->nullable()->constrained();
             $table->timestamps();
         });
     }

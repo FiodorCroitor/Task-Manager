@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('description');
             $table->string('price');
             $table->string('status');
-            $table->foreignIdFor(\App\Models\Category::class,'category_id')->constrained();
             $table->timestamps();
         });
     }

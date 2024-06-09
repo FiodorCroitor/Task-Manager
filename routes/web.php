@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Register\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,6 @@ use App\Http\Controllers\Auth\AuthController;
 */
 
 Route::get('/' , [AuthController::class, 'login'])->name('login');
+Route::post('/auth', [AuthController::class, 'auth'])->name('auth');
 
+Route::get('/register',[RegisterController::class , 'index'])->name('register');

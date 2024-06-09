@@ -56,4 +56,10 @@ class UserRepository
     {
         return User::query()->get();
     }
+    public function getByUserNameOrEmail(string $field): ?User
+    {
+        return User::where('name', $field)
+            ->orWhere('email', $field)
+            ->first();
+    }
 }

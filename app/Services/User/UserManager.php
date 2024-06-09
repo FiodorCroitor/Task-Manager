@@ -9,7 +9,6 @@ use App\Http\Requests\User\UserDeleteRequest;
 use App\Http\Requests\User\UserRequest;
 use App\Models\User;
 use App\Repository\User\UserRepository;
-use App\Models\Profile;
 
 class UserManager
 {

@@ -77,7 +77,7 @@ class RouteServiceProvider extends ServiceProvider
 //            })
 //        ;
 
-        Route::prefix('admin')
+        Route::prefix('user')
             ->group(static function () {
                 foreach (File::allFiles(base_path('routes/v1')) as $file) {
                     require $file->getPathname();

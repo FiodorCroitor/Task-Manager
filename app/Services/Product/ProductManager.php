@@ -3,23 +3,36 @@
 namespace App\Services\Product;
 
 use App\Data\Product\ProductData;
+use App\Exceptions\Attachment\AttachmentNotFoundException;
 use App\Exceptions\Product\ProductNotFoundException;
 use App\Http\Requests\Product\ProductDeleteRequest;
 use App\Http\Requests\Product\ProductRequest;
 use App\Models\Product;
+use App\Repository\Attachments\AttachmentsRepository;
 use App\Repository\Category\CategoryRepository;
 use App\Repository\Product\ProductRepository;
+use App\Services\Attachments\AttachmentsManager;
 
 class ProductManager
 {
     public ProductRepository $productRepository;
     public ProductData $productData;
     public CategoryRepository $categoryRepository;
-    public function __construct(ProductRepository $productRepository , ProductData $productData , CategoryRepository $categoryRepository)
+    public AttachmentsRepository $attachmentsRepository;
+    public AttachmentsManager $attachmentsManager;
+    public function __construct(
+        ProductRepository $productRepository ,
+        ProductData $productData ,
+        CategoryRepository $categoryRepository,
+        AttachmentsRepository $attachmentsRepository,
+        AttachmentsManager $attachmentsManager
+    )
     {
         $this->productRepository = $productRepository;
         $this->productData = $productData;
         $this->categoryRepository = $categoryRepository;
+        $this->attachmentsRepository = $attachmentsRepository;
+        $this->attachmentsManager = $attachmentsManager;
     }
 
     public function store(ProductRequest $request , ProductData $productData): void
@@ -70,7 +83,6 @@ class ProductManager
         }
         $product->delete();
     }
-    //TODO: Implement delete() method.
     public function deleteMediaFromProduct(ProductDeleteRequest $request, Product $product): void
     {
         $existedAttachment = $this->attachmentsRepository->getById($product, (int)$request->id);

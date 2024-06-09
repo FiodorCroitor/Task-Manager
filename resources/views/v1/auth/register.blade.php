@@ -62,7 +62,7 @@
 </head>
 <body>
 <div class="login-container">
-    <form method="POST" action="{{ route('auth') }}">
+    <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="form-group">
             <label for="email">Email</label>
@@ -82,7 +82,7 @@
             <button type="submit">Sign In</button>
         </div>
         <div class="form-group">
-            <button type="button" onclick="window.location.href='{{route('register')}}'">Register</button>
+            <button type="button" {{route('register')}}>Register</button>
         </div>
     </form>
 </div>

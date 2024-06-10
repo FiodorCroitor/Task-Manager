@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Register\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,3 +14,7 @@ use App\Http\Controllers\Register\RegisterController;
 |
 */
 
+Route::middleware('app.auth')
+    ->get('/' , [AuthController::class, 'login'])->name('login');
+
+Route::post('/auth', [AuthController::class, 'auth'])->name('auth');

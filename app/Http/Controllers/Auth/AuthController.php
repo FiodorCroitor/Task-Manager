@@ -33,7 +33,20 @@ class AuthController extends Controller
     }
     public function auth(AuthRequest $request)
     {
+        $authData = $this->authDataMapper->mapFromRequestToNormalized($request);
+        $credentials = $this->authManager->getCredentials($authData);
+        $checkedUser = $this->userRepository->getByUsernameOrEmail($authData->email);
 
+        if (empty($checkedUser)) {
+            return Redirect::back()->withErrors(['role.permissions' => 'Отказано в доступе']);
+        }
+        if (Auth::guard('web')->attempt($credentials)) {
+            $user = Auth::guard('web')->user();
+
+            return redirect()->route('dashboard.index');
+        }
+
+        return redirect()->route('login')->withErrors(['auth' => 'Неверный логин или пароль']);
     }
 
 }

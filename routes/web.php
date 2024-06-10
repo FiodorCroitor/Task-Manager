@@ -15,7 +15,3 @@ use App\Http\Controllers\Register\RegisterController;
 |
 */
 
-Route::get('/' , [AuthController::class, 'login'])->name('login');
-Route::post('/auth', [AuthController::class, 'auth'])->name('auth');
-
-Route::get('/register',[RegisterController::class , 'index'])->name('register');

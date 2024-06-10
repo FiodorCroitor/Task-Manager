@@ -81,10 +81,10 @@
         <div class="form-group">
             <button type="submit">Sign In</button>
         </div>
-        <div class="form-group">
-            <button type="button" onclick="window.location.href='{{route('register')}}'">Register</button>
-        </div>
     </form>
+    <div class="form-group">
+        <button type="button" onclick="window.location.href='{{route('register')}}'">Register</button>
+    </div>
 </div>
 </body>
 </html>

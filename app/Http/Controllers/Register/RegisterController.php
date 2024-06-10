@@ -6,12 +6,11 @@ use App\Exceptions\User\UserDuplicatedMailException;
 use App\Exceptions\User\UserDuplicatedMailValidationException;
 use App\Http\Controllers\Controller;
 use App\Http\Mappers\User\UserDataMapper;
-use App\Http\Requests\Register\RegisterRequest;
 use App\Http\Requests\User\UserRequest;
 use App\Repository\User\UserRepository;
 use App\Services\User\UserManager;
 
-class RegisterController extends Controller
+final class RegisterController extends Controller
 {
     public function __construct(
         public readonly UserRepository $userRepository,

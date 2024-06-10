@@ -5,6 +5,7 @@ namespace App\Repository\User;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\QueryBuilder;
+use function Symfony\Component\String\s;
 
 class UserRepository
 {
@@ -61,5 +62,10 @@ class UserRepository
         return User::where('name', $field)
             ->orWhere('email', $field)
             ->first();
+
+    }
+    public function getByEmail(string $email): ?User
+    {
+        return User::where('email', $email)->first();
     }
 }

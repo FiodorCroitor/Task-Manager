@@ -14,7 +14,7 @@ final class AuthManager
 
     public function getCredentials(AuthData $authData): array
     {
-        $username = $authData->username;
+        $username = $authData->email;
         $password = $authData->password;
         $loginFieldName = $this->getLoginFieldNameByUsername($username);
         return [

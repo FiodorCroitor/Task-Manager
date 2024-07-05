@@ -4,6 +4,9 @@ namespace App\Http\Requests\Prepayment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $prepayment_id
+ */
 class PrepaymentDeleteRequest extends FormRequest
 {
 

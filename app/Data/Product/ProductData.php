@@ -7,27 +7,19 @@ namespace App\Data\Product;
  * @property string $description
  * @property int $category
  * @property float $price
- * @property string $status
+ * @property string $status_id
+ * @property array $attachments
  */
 class ProductData
 {
-    public string $name;
-    public string $description;
-    public int $category_id;
-    public float $price;
-    public string $status;
-   public function __construct(
-       string $name,
-       string $description,
-       int    $category_id,
-       float  $price,
-       string $status
-   )
-   {
-       $this->name = $name;
-       $this->description = $description;
-       $this->category = $category_id;
-       $this->price = $price;
-       $this->status = $status;
-   }
+    public function __construct(
+        public readonly string  $name,
+        public readonly ?string $description,
+        public readonly string  $status,
+        public readonly string  $category_id,
+        public readonly ?array  $attachments,
+
+    )
+    {
+    }
 }

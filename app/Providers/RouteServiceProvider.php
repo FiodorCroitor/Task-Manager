@@ -20,71 +20,29 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
     }
 
-//    public function map(): void
-//    {
-//        Route::prefix('api')
-//            ->middleware('api')
-//            ->group(base_path('routes/api.php'))
-//        ;
-//
-//        Route::prefix('api/v1')
-//            ->name('v1.')
-//            ->middleware(['api'])
-//            ->group(static function () {
-//                foreach (File::allFiles(base_path('routes/v1')) as $file) {
-//                    require $file->getPathname();
-//                }
-//            })
-//        ;
-//
-//        Route::prefix('api/v1')
-//            ->name('v1.')
-//            ->middleware(['api', 'auth:sanctum', 'verified', 'app.user-status'])
-//            //->middleware(['api', 'verified', 'app.user-status'])
-//            ->group(static function () {
-//                foreach (File::allFiles(base_path('routes/v1/authorized')) as $file) {
-//                    require $file->getPathname();
-//                }
-//            })
-//        ;
-//
-//        Route::middleware('web')->group(base_path('routes/web.php'));
-//    }
 
     public function map(): void
     {
         Route::prefix('api')
             ->middleware('api')
-            ->group(base_path('routes/api.php'))
-        ;
+            ->group(base_path('routes/api.php'));
 
-//        Route::middleware(['user'])
-//            ->as('user.')
-//            ->group(static function () {
-//                foreach (File::allFiles(base_path('routes/user')) as $file) {
-//                    require $file->getPathname();
-//                }
-//            })
-//        ;
-//
-//        Route::
-//        middleware(['user', 'app.client-status'])
-//            ->as('user.')
-//            ->group(static function () {
-//                foreach (File::allFiles(base_path('routes/user/authorized')) as $file) {
-//                    require $file->getPathname();
-//                }
-//            })
-//        ;
 
         Route::prefix('user')
+            ->middleware(['web'])
             ->group(static function () {
                 foreach (File::allFiles(base_path('routes/v1')) as $file) {
                     require $file->getPathname();
                 }
-            })
-        ;
+            });
 
+        Route::prefix('user')
+            ->middleware(['web', 'auth:sanctum', 'verified'])
+            ->group(static function () {
+                foreach (File::allFiles(base_path('routes/v1/authorized')) as $file) {
+                    require $file->getPathname();
+                }
+            });
 
         Route::middleware('web')->group(base_path('routes/web.php'));
     }

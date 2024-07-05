@@ -3,82 +3,89 @@
 namespace App\Services\Prepayment;
 
 use App\Data\Prepayment\PrepaymentData;
+use App\Enums\PayoutStatuses;
+use App\Enums\ProductStatuses;
+use App\Exceptions\Payout\PayoutNotFoundException;
 use App\Exceptions\Prepayment\PrepaymentNotFoundException;
 use App\Exceptions\Product\ProductNotFoundException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Http\Requests\Prepayment\PrepaymentDeleteRequest;
 use App\Http\Requests\Prepayment\PrepaymentRequest;
 use App\Models\Prepayment;
-use App\Models\User;
+use App\Repository\Payout\PayoutRepository;
 use App\Repository\Prepayment\PrepaymentRepository;
 use App\Repository\Product\ProductRepository;
 use App\Repository\User\UserRepository;
 
-class PrepaymentManager
+final class PrepaymentManager
 {
     public function __construct(
         public readonly PrepaymentRepository $prepaymentRepository,
-        public readonly ProductRepository    $productRepository,
+        public readonly PayoutRepository     $payoutRepository,
         public readonly UserRepository       $userRepository,
     )
     {
 
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws ProductNotFoundException
+     */
     public function store(PrepaymentData $prepaymentData): void
     {
-        if ($prepaymentData->userId !== null) {
-            $existedProduct = $this->productRepository->getById($prepaymentData->productId);
-            if ($existedProduct === null) {
-                throw  new ProductNotFoundException();
-            }
-            $productId = $prepaymentData->productId;
-        }
-        $existedUser = $this->userRepository->getById($prepaymentData->userId);
+
+        $existedUser = $this->userRepository->getById($prepaymentData->user_id);
 
         if ($existedUser === null) {
-            throw  new UserNotFoundException();
+            throw new UserNotFoundException();
         }
+
+        $existedPayout = $this->payoutRepository->getById($prepaymentData->payout_id);
+
+        if ($existedPayout === null) {
+            throw new PayoutNotFoundException();
+        }
+/*
+        if ($existedPayout->status != PayoutStatuses::FINISHED) {
+            throw new PayoutNotFoundException();
+        }
+*/
 
         Prepayment::create([
-            'userId' => $prepaymentData->userId,
-            'productId' => $prepaymentData->productId,
+            'user_id' => $prepaymentData->user_id,
+            'payout_id' => $prepaymentData->payout_id,
+            'amount' => $prepaymentData->amount
+        ]);
+
+
+        $existedUser->update([
+            'prepayment_sum' => (float)$existedUser->prepayment_sum + (float)$prepaymentData->amount
+        ]);
+
+    }
+
+    /**
+     * @throws UserNotFoundException
+     * @throws ProductNotFoundException
+     */
+    public function update(PrepaymentData $prepaymentData, Prepayment $prepayment): void
+    {
+        $existedUser = $this->userRepository->getById($prepaymentData->user_id);
+
+        $prepayment->update([
+            'payout_id' => $prepaymentData->payout_id,
+            'user_id' => $prepaymentData->user_id,
+            'amount' => $prepaymentData->amount
+        ]);
+
+        $existedUser->update([
+            'prepayment_sum' => (float)$existedUser->prepayment_sum + (float)$prepaymentData->amount
         ]);
     }
 
-    public function update(PrepaymentData $prepaymentData): void
+    public function delete(Prepayment $prepayment): void
     {
-        if ($prepaymentData->userId !== null) {
-            $existedProduct = $this->productRepository->getById($prepaymentData->productId);
-            if ($existedProduct === null) {
-                throw  new ProductNotFoundException();
-            }
-            $productId = $prepaymentData->productId;
-        }
-        $existedUser = $this->userRepository->getById($prepaymentData->userId);
-
-        if ($existedUser === null) {
-            throw  new UserNotFoundException();
-        }
-
-        Prepayment::update([
-            'userId' => $prepaymentData->userId,
-            'productId' => $prepaymentData->productId,
-        ]);
-    }
-
-    public function delete(PrepaymentDeleteRequest $request)
-    {
-        $prepaymentId = (int)$request->prepayment_id;
-
-        $prepayment = $this->prepaymentRepository->getById($prepaymentId);
-
-        if ($prepayment === null) {
-            throw new PrepaymentNotFoundException();
-        }
-
         $prepayment->delete();
     }
-
-
 }

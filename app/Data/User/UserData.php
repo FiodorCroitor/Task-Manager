@@ -2,7 +2,6 @@
 
 namespace App\Data\User;
 /**
- * @property string $name
  * @property string $password
  * @property string $email
  * @property string $first_name
@@ -10,27 +9,12 @@ namespace App\Data\User;
  */
 class UserData
 {
-    public string $name;
-
-    public string $email;
-
-    public string $password;
-
-    public string $first_name;
-    public string $last_name;
-
     public function __construct(
-        string $name,
-        string $email,
-        string $password,
-        string $first_name,
-        string $last_name,
+        public readonly string $email,
+        public readonly string $password,
+        public readonly string $first_name,
+        public readonly string $last_name,
     )
     {
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
-        $this->first_name = $first_name;
-        $this->last_name = $last_name;
     }
 }

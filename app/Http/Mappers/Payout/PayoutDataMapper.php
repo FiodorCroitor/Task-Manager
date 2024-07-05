@@ -10,8 +10,10 @@ class PayoutDataMapper
     public function mapFromRequestToNormalized(PayoutRequest $request): PayoutData
     {
         return new PayoutData(
-            $request->product_id,
             $request->user_id,
+            $request->product_id,
+            $request->price,
+            $request->status,
         );
     }
 }

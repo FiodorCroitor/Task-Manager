@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('product_id')->constrained();
+            $table->foreignIdFor(\App\Models\Product::class)->nullable()->constrained();
+            $table->string('price');
+            $table->string('status');
             $table->timestamps();
         });
     }

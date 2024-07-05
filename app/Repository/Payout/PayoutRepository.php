@@ -32,8 +32,8 @@ class PayoutRepository
     {
         return Payout::all();
     }
-    public function getById(int $id): ?Category
+    public function getById(int $id): ?Payout
     {
-        return Category::find($id);
+        return Payout::find($id);
     }
 }

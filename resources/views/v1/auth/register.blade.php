@@ -54,37 +54,35 @@
             background-color: #2779bd;
         }
 
-        .error {
-            color: red;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
 <div class="login-container">
-    <form method="POST" action="{{ route('login') }}">
+    <form action="{{route('store')}}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="email">Email</label>
+            <label for="first_name">Имя</label>
+            <input id="first_name" type="text" name="first_name" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Фамилия</label>
+            <input id="last_name" type="text" name="last_name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Почта</label>
             <input id="email" type="email" name="email" required autofocus>
-            @error('email')
-            <div class="error">{{ $message }}</div>
-            @enderror
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">Пароль</label>
             <input id="password" type="password" name="password" required>
-            @error('password')
-            <div class="error">{{ $message }}</div>
-            @enderror
         </div>
         <div class="form-group">
-            <button type="submit">Sign In</button>
-        </div>
-        <div class="form-group">
-            <button type="button" {{route('register')}}>Register</button>
+            <button type="submit">Зарегистрироваться</button>
         </div>
     </form>
+    <div class="form-group">
+        <a href="{{ route('login') }}" class="btn">Войти в аккаунт</a>
+    </div>
 </div>
 </body>
 </html>

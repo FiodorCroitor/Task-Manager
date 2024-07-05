@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Register\RegisterController;
+use App\Http\Controllers\Auth\RegisterController;
 
-Route::middleware('app.auth')
-    ->get('/register', [RegisterController::class, 'index'])->name('register');
+Route::get('register' , [RegisterController::class, 'index'])->name('register');
+Route::post('store' , [RegisterController::class, 'store'])->name('store');

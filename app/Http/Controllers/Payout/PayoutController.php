@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Payout;
 
+use App\Enums\PayoutStatuses;
 use App\Exceptions\Payout\PayoutNotFoundException;
 use App\Exceptions\Payout\PayoutNotFoundValidationException;
 use App\Exceptions\Product\ProductNotFoundException;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Payout\PayoutDeleteRequest;
 use App\Http\Requests\Payout\PayoutRequest;
 use App\Models\Payout;
+use App\Repository\Category\CategoryRepository;
 use App\Repository\Payout\PayoutRepository;
 use App\Repository\Product\ProductRepository;
 use App\Repository\User\UserRepository;
@@ -20,75 +22,74 @@ use App\Services\Payout\PayoutManager;
 
 final class PayoutController extends Controller
 {
-    public PayoutRepository $payoutRepository;
-    public PayoutDataMapper $payoutDataMapper;
-    public PayoutManager $payoutManager;
-    public ProductRepository $productRepository;
-    public UserRepository $userRepository;
 
     public function __construct(
-        PayoutRepository  $payoutRepository,
-        PayoutDataMapper  $payoutDataMapper,
-        PayoutManager     $payoutManager,
-        ProductRepository $productRepository,
-        UserRepository    $userRepository,
+        public readonly PayoutRepository  $payoutRepository,
+        public readonly PayoutDataMapper  $payoutDataMapper,
+        public readonly PayoutManager     $payoutManager,
+        public readonly UserRepository    $userRepository,
+        public readonly ProductRepository $productRepository,
+
     )
     {
-        $this->payoutRepository = $payoutRepository;
-        $this->payoutDataMapper = $payoutDataMapper;
-        $this->payoutManager = $payoutManager;
-        $this->productRepository = $productRepository;
-        $this->userRepository = $userRepository;
     }
 
     public function index()
     {
-        $payout = $this->payoutRepository->getAllWithPaginatedWithFilter();
-        return view('payout.index', compact('payout'));
+        $payouts = $this->payoutRepository->getAllWithPaginatedWithFilter();
+        return view('v1.payout.index', compact('payouts'));
+    }
+
+    public function create()
+    {
+        $statuses = PayoutStatuses::getAll();
+        $users = $this->userRepository->getAll();
+        $products = $this->productRepository->getAll();
+        return view('v1.payout.create', compact('users', 'products', 'statuses'));
     }
 
     public function store(PayoutRequest $request)
     {
         $payoutData = $this->payoutDataMapper->mapFromRequestToNormalized($request);
         try {
-            $this->payoutManager->store($request, $payoutData);
+            $this->payoutManager->store($payoutData);
 
-            return redirect()->route('payout.index');
-        } catch (ProductNotFoundException $e) {
-            throw  new ProductNotFoundValiadationException();
+            return redirect()->route('payouts.index');
         } catch (UserNotFoundException $e) {
             throw new UserNotFoundValidationException();
         }
     }
 
-    public function edit(Payout $payout , PayoutRequest $request)
+    public function edit(Payout $payout)
     {
-        $user = $this->userRepository->getById($request->user_id);
-        $product = $this->productRepository->getALL();
-        return view('payout.index' , compact('user' , 'product'));
+        $statuses = PayoutStatuses::getAll();
+        $users = $this->userRepository->getAll();
+        $products = $this->productRepository->getAll();
+        return view('v1.payout.edit', compact(
+            'users',
+            'payout',
+            'statuses',
+            'products'
+        ));
     }
-    public function update(PayoutRequest $request)
+
+    public function update(PayoutRequest $request, Payout $payout)
     {
         $payoutData = $this->payoutDataMapper->mapFromRequestToNormalized($request);
         try {
-            $this->payoutManager->store($request, $payoutData);
+            $this->payoutManager->update($payoutData, $payout);
 
-            return redirect()->route('payout.index');
-        } catch (ProductNotFoundException $e) {
-            throw  new ProductNotFoundValiadationException();
+            return redirect()->route('payouts.index');
         } catch (UserNotFoundException $e) {
             throw new UserNotFoundValidationException();
         }
     }
-    public function delete(PayoutDeleteRequest $request)
+
+    //Request
+    public function delete(Payout $payout)
     {
-        try {
-            $this->payoutManager->delete($request);
+        $payout->delete();
 
-            return response()->json(['id' => $request->payout_id]);
-        } catch (PayoutNotFoundException $e) {
-            throw new PayoutNotFoundValidationException();
-        }
+        return redirect()->route('payouts.index');
     }
-
 }

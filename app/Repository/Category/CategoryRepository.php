@@ -11,24 +11,28 @@ class CategoryRepository
 {
     private const COUNT_OF_PAGINATION = 12;
 
-    public function getAllWithPaginatedWithFilter(): LengthAwarePaginator
+    public function getAllPaginatedWithFilters(): LengthAwarePaginator
     {
         $query = Category::query();
 
         return QueryBuilder::for($query)
             ->allowedFilters([
-                'name',
+
             ])
-            ->defaultSort('-id')
+            ->defaultSort('id')
             ->allowedSorts([
                 'id',
             ])
-            ->paginate(self::COUNT_OF_PAGINATION);
+            ->paginate(self::COUNT_OF_PAGINATION)
+            ;
     }
     public function getByName(string $name): ?Category
     {
         return Category::where('name', $name)->first();
     }
+
+
+
     public function getAll(): \Illuminate\Support\Collection
     {
         return Category::query()->get();

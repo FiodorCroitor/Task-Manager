@@ -1,14 +1,20 @@
 <?php
 
 namespace App\Data\Prepayment;
-/** @property string productId;
- * @property string $userId;
+/**
+ * @property int $user_id
+ * @property string $payout_id
+ * @property string $amount
  */
 class PrepaymentData
 {
+
     public function __construct(
-        public readonly ?int $productId,
-        public readonly int $userId,
-    ) {
+        public readonly int    $user_id,
+        public readonly string $payout_id,
+        public readonly string $amount,
+    )
+    {
     }
+
 }

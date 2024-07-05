@@ -10,7 +10,7 @@ final class UserDataMapper
     public function mapFromRequestToNormalized(UserRequest $request): UserData
     {
       return new UserData(
-          $request->name,
+
           $request->email,
           $request->password,
           $request->first_name,

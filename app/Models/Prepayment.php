@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Prepayment extends Model
 {
@@ -11,7 +12,13 @@ class Prepayment extends Model
 
     protected $fillable =
         [
-          'userId',
-          'productId'
+            'user_id',
+            'payout_id',
+            'amount',
         ];
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
 }

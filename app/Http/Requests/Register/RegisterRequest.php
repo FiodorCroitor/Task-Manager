@@ -4,6 +4,13 @@ namespace App\Http\Requests\Register;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $password
+ */
+
 class RegisterRequest extends FormRequest
 {
 

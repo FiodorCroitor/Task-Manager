@@ -65,25 +65,25 @@
     <form method="POST" action="{{ route('auth') }}">
         @csrf
         <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">Почта</label>
             <input id="email" type="email" name="email" required autofocus>
             @error('email')
             <div class="error">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">Пароль</label>
             <input id="password" type="password" name="password" required>
             @error('password')
             <div class="error">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group">
-            <button type="submit">Sign In</button>
+            <button type="submit">Войти</button>
         </div>
     </form>
     <div class="form-group">
-        <button type="button" onclick="window.location.href='{{route('register')}}'">Register</button>
+        <button type="button" onclick="window.location.href='{{route('register')}}'">Зарегестрироваться</button>
     </div>
 </div>
 </body>

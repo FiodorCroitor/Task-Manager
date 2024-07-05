@@ -2,82 +2,108 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Data\Product\ProductData;
+use App\Enums\ProductStatuses;
+use App\Exceptions\Attachment\AttachmentNotFoundException;
+use App\Exceptions\Attachment\AttachmentNotFoundValidationException;
+use App\Exceptions\Category\CategoryNotFoundException;
+use App\Exceptions\Category\CategoryNotFoundValidationException;
 use App\Exceptions\Product\ProductNotFoundException;
 use App\Http\Controllers\Controller;
+use App\Http\Mappers\Product\ProductDataMapper;
+use App\Http\Requests\Product\ProductDeleteMediaRequest;
 use App\Http\Requests\Product\ProductDeleteRequest;
 use App\Http\Requests\Product\ProductRequest;
-use App\Models\Category;
 use App\Models\Product;
 use App\Repository\Category\CategoryRepository;
 use App\Repository\Product\ProductRepository;
 use App\Services\Product\ProductManager;
 
+
+
 final class ProductController extends Controller
 {
-    public ProductRepository $productRepository;
-    public ProductManager $productManager;
-    public CategoryRepository $categoryRepository;
 
-    public function __construct(ProductRepository $productRepository, ProductManager $productManager,CategoryRepository $categoryRepository)
+    public function __construct(
+        public readonly ProductRepository  $productRepository,
+        public readonly ProductManager     $productManager,
+        public readonly CategoryRepository $categoryRepository,
+        public readonly ProductDataMapper  $productDataMapper,
+    )
     {
-        $this->productRepository = $productRepository;
-        $this->productManager = $productManager;
-        $this->categoryRepository = $categoryRepository;
+
+
     }
 
     public function index()
     {
-        $product = $this->productRepository->getAllWithPaginatedWithFilter();
-        return view('product.index', compact('product'));
+        $products = $this->productRepository->getAllWithPaginatedWithFilter();
+        return view('v1.product.index', compact('products'));
     }
 
-    public function store(ProductRequest $request, ProductData $productData)
+    public function create()
     {
-        $existedData = $this->productRepository->getById($request->id);
-        try {
-            $this->productManager->store($request, $productData);
+        $statuses = ProductStatuses::getAll();
+        $categories = $this->categoryRepository->getAll();
+        return view('v1.product.create', compact('categories', 'statuses'));
+    }
 
-            return redirect()->route('product.index');
-        } catch (ProductNotFoundException $e) {
-            throw  new ProductNotFoundException();
+    public function store(ProductRequest $request)
+    {
+        $productData = $this->productDataMapper->mapFromRequestToNormalized($request);
+        try {
+            $this->productManager->store($productData, $request);
+
+            return redirect()->route('products.index');
+        } catch (CategoryNotFoundException $e) {
+            throw new CategoryNotFoundValidationException();
         }
     }
 
-        public function edit(Product $product)
-        {
-            $categories = $this->categoryRepository->getAll();
-
-            return view('product.edit', compact(['product', 'categories']));
-        }
+    public function edit(Product $product)
+    {
+        $statuses = ProductStatuses::getAll();
+        $categories = $this->categoryRepository->getAllPaginatedWithFilters();
+        return view('v1.product.edit', compact('product', 'categories', 'statuses'));
+    }
 
     public function show(Product $product)
     {
         $categories = $this->categoryRepository->getAll();
-        return view('product.show', compact('product' , 'categories'));
+        return view('product.show', compact('product', 'categories'));
     }
 
-    public function update(ProductRequest $request, ProductData $productData)
+    public function update(ProductRequest $request, Product $product)
     {
-        $existedData = $this->productRepository->getById($request->id);
+        $productData = $this->productDataMapper->mapFromRequestToNormalized($request);
         try {
-            $this->productManager->update($request, $productData);
+            $this->productManager->update($productData, $product, $request);
 
-            return redirect()->route('product.index');
+            return redirect()->route('products.index');
         } catch (ProductNotFoundException $e) {
             throw  new ProductNotFoundException();
         }
     }
 
-    public function destroy(ProductDeleteRequest $request)
+    public function delete(Product $product)
     {
-
         try {
-            $this->productManager->delete($request);
+            $this->productManager->delete($product);
 
-            return response()->json(['id' => $request->product_id]);
+            return redirect()->route('products.index');
+
         } catch (ProductNotFoundException $e) {
             throw new ProductNotFoundException();
+        }
+
+    }
+    public function deleteProductMedia(ProductDeleteMediaRequest $request, Product $product)
+    {
+        try {
+            $this->productManager->deleteMediaFromProduct($request, $product);
+
+            return response()->json(['status' => true]);
+        } catch (AttachmentNotFoundException $e) {
+            throw new AttachmentNotFoundValidationException();
         }
     }
 }

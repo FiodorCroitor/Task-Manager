@@ -13,6 +13,7 @@ class CategoryDataMapper
     {
         return new CategoryData(
             $request->name,
+            $request->status,
         );
     }
 }

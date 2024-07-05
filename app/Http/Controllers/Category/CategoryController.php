@@ -2,75 +2,76 @@
 
 namespace App\Http\Controllers\Category;
 
-use App\Data\Category\CategoryData;
 use App\Exceptions\Category\CategoryNotFoundException;
+use App\Exceptions\Category\CategoryNotFoundValidationException;
+use App\Exceptions\Category\CategoryAlreadyExistsException;
 use App\Http\Controllers\Controller;
 use App\Http\Mappers\Category\CategoryDataMapper;
-use App\Http\Requests\Category\CategoryDeleteRequest;
 use App\Http\Requests\Category\CategoryRequest;
 use App\Models\Category;
+use Illuminate\Support\Facades\Request;
 use App\Repository\Category\CategoryRepository;
 use App\Services\Category\CategoryManager;
 
 final class CategoryController extends Controller
 {
-    public CategoryRepository $categoryRepository;
-    public CategoryData $categoryData;
-    public CategoryDataMapper $categoryDataMapper;
-    public CategoryManager $categoryManager;
-
     public function __construct(
-        CategoryRepository $categoryRepository,
-        CategoryData       $categoryData,
-        CategoryDataMapper $categoryDataMapper,
-        CategoryManager    $categoryManager)
+        public readonly CategoryRepository $categoryRepository,
+        public readonly CategoryDataMapper $categoryDataMapper,
+        public readonly CategoryManager    $categoryManager,
+    )
     {
-        $this->categoryRepository = $categoryRepository;
-        $this->categoryData = $categoryData;
-        $this->categoryDataMapper = $categoryDataMapper;
-        $this->categoryManager = $categoryManager;
     }
 
     public function index()
     {
-        $categories = $this->categoryRepository->getAll();
-        return view('category.index', compact('categories'));
+        $categories = $this->categoryRepository->getAllPaginatedWithFilters();
+        return view('v1.category.index', compact('categories'));
+    }
+
+    public function create()
+    {
+        return view('v1.category.create');
     }
 
     public function store(CategoryRequest $request)
     {
-
         $categoryData = $this->categoryDataMapper->mapFromRequestToNormalized($request);
         try {
-            $this->categoryManager->store($request);
-        } catch (CategoryNotFoundException $e) {
-            throw new CategoryNotFoundException();
+            $this->categoryManager->store($categoryData);
+
+            return redirect()->route('categories.index');
+        } catch (CategoryAlreadyExistsException $e) {
+            throw new CategoryNotFoundValidationException();
         }
     }
 
     public function edit(Category $category)
     {
-        return view('category.show', compact('category'));
+        return view('v1.category.edit', compact('category'));
     }
 
-    public function update(CategoryRequest $request)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $category = $this->categoryRepository->getById($request->category_id);
-        if ($category === null) {
-            throw new CategoryNotFoundException();
+        $categoryData = $this->categoryDataMapper->mapFromRequestToNormalized($request);
+
+        try {
+            $this->categoryManager->update($categoryData, $category);
+
+            return redirect()->route('categories.index');
+        } catch (CategoryAlreadyExistsException $e) {
+            throw new CategoryNotFoundValidationException();
         }
-        Category::update([
-            'name',
-        ]);
     }
-    public function delete(CategoryDeleteRequest $request , Category $category)
+
+    public function delete(Request $request, Category $category)
     {
         try {
-            $this->categoryManager->delete($request);
+            $this->categoryManager->delete($category);
 
-            return response()->json(['id' => $request->category_id]);
+            return redirect()->route('categories.index');
         } catch (CategoryNotFoundException $e) {
-            throw new CategoryNotFoundException();
+           throw new CategoryNotFoundValidationException();
         }
     }
 }

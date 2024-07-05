@@ -9,8 +9,8 @@ use App\Data\Auth\AuthData;
 
 final class AuthManager
 {
-    private const EMAIL_ATTRIBUTE = 'email';
-    private const NICKNAME_ATTRIBUTE = 'name';
+    private const string EMAIL_ATTRIBUTE = 'email';
+    private const string NICKNAME_ATTRIBUTE = 'name';
 
     public function getCredentials(AuthData $authData): array
     {

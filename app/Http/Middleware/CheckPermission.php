@@ -13,14 +13,12 @@ class CheckPermission
 {
     public function handle(Request $request, Closure $next): Response
     {
-/*
         $user = Auth::user();
         $routeName = $request->route()->getName();
-        if($user === null || $routeName === null)
-        {
-            throw  new AccessDeniedHttpException('Access Denied' , null , Response::HTTP_FORBIDDEN);
+        if ($user === null || $routeName === null) {
+            throw  new AccessDeniedHttpException('Access Denied', null, Response::HTTP_FORBIDDEN);
         }
-*/
+
         return $next($request);
     }
 }

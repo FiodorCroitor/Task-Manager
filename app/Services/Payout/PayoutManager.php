@@ -3,69 +3,83 @@
 namespace App\Services\Payout;
 
 use App\Data\Payout\PayoutData;
+use App\Enums\PayoutStatuses;
+use App\Enums\ProductStatuses;
 use App\Exceptions\Payout\PayoutNotFoundException;
 use App\Exceptions\Product\ProductNotFoundException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Http\Requests\Payout\PayoutDeleteRequest;
-use App\Http\Requests\Payout\PayoutRequest;
 use App\Models\Payout;
 use App\Repository\Payout\PayoutRepository;
 use App\Repository\Product\ProductRepository;
 use App\Repository\User\UserRepository;
-use PHPUnit\Event\Runtime\PHP;
 
-class PayoutManager
+
+final class PayoutManager
 {
 
     public function __construct(
-        public readonly PayoutRepository  $payoutRepository,
-        public readonly UserRepository    $userRepository,
-        public readonly ProductRepository $productRepository,
+        public PayoutRepository  $payoutRepository,
+        public UserRepository    $userRepository,
+        public ProductRepository $productRepository,
     )
     {
     }
 
-    public function store(PayoutRequest $request, PayoutData $payoutData)
+    /**
+     * @throws UserNotFoundException
+     */
+    public function store(PayoutData $payoutData): void
     {
-        $existedUser = $this->userRepository->getFirstByUserName($request->name);
+
+        $existedUser = $this->userRepository->getById($payoutData->user_id);
+        $existedProduct = $this->productRepository->getById($payoutData->product_id);
+
         if ($existedUser === null) {
-            throw  new UserNotFoundException();
+            throw new UserNotFoundException();
         }
 
-        $existedProduct = $this->productRepository->getById($request->product_id);
-        if ($existedProduct === null) {
-            throw  new ProductNotFoundException();
+        if ($existedProduct === null || $existedProduct->status != ProductStatuses::FINISHED) {
+            throw new ProductNotFoundException();
         }
+
         Payout::create([
             'user_id' => $payoutData->user_id,
             'product_id' => $payoutData->product_id,
+            'price' => $payoutData->price,
+            'status' => $payoutData->status,
         ]);
+
     }
 
-    public function update(PayoutRequest $request, PayoutData $payoutData)
+    /**
+     * @throws UserNotFoundException
+     */
+    public function update(PayoutData $payoutData, Payout $payout): void
     {
-        $existedUser = $this->userRepository->getFirstByUserName($request->name);
+        $existedUser = $this->userRepository->getById($payoutData->user_id);
+
         if ($existedUser === null) {
-            throw  new UserNotFoundException();
+            throw new UserNotFoundException();
         }
 
-        $existedProduct = $this->productRepository->getById($request->product_id);
-        if ($existedProduct === null) {
-            throw  new ProductNotFoundException();
-        }
-        Payout::update([
-            'user_id' => $payoutData->user_id,
+        $payout->update([
+            'user_id' => $existedUser,
             'product_id' => $payoutData->product_id,
+            'price' => $payoutData->price,
+            'status' => $payoutData->status,
         ]);
     }
 
-    public function delete(PayoutDeleteRequest $request)
+    /**
+     * @throws PayoutNotFoundException
+     */
+    public function delete(PayoutDeleteRequest $request): void
     {
         $payoutId = (int)$request->payout_id;
         $payout = $this->payoutRepository->getById($payoutId);
 
-        if($payout === null)
-        {
+        if ($payout === null) {
             throw  new PayoutNotFoundException();
         }
         $payout->delete();

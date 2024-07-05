@@ -4,50 +4,52 @@ namespace App\Services\Category;
 
 use App\Data\Category\CategoryData;
 use App\Exceptions\Category\CategoryNotFoundException;
-use App\Http\Requests\Category\CategoryDeleteRequest;
-use App\Http\Requests\Category\CategoryRequest;
+use App\Exceptions\Category\CategoryAlreadyExistsException;
 use App\Models\Category;
 use App\Repository\Category\CategoryRepository;
 
-class CategoryManager
+final class CategoryManager
 {
-    public CategoryRepository $categoryRepository;
-
-    public function __construct(CategoryRepository $categoryRepository)
+    public function __construct(public readonly CategoryRepository $categoryRepository)
     {
-        $this->categoryRepository = $categoryRepository;
     }
 
-    public function store(CategoryRequest $request)
+    /**
+     * @throws CategoryAlreadyExistsException
+     */
+    public function store(CategoryData $categoryData): void
     {
-        $existedCategory = $this->categoryRepository->getByName($request->name);
-        if($existedCategory === null){
-            throw  new CategoryNotFoundException();
+        $existedCategory = $this->categoryRepository->getByName($categoryData->name);
+        if ($existedCategory !== null) {
+            throw new CategoryNotFoundException("Category with name '{$categoryData->name}' already exists.");
         }
+
         Category::create([
-            'name' => $request->name,
-            ]);
-    }
-
-    public function update(CategoryRequest $request)
-    {
-        $existedCategory = $this->categoryRepository->getByName($request->name);
-        if($existedCategory === null){
-            throw  new CategoryNotFoundException();
-        }
-        Category::update([
-            'name' => $request->name,
+            'name' => $categoryData->name,
+            'status' => $categoryData->status,
         ]);
     }
-    public function delete(CategoryDeleteRequest $request): void
+
+    /**
+     * @throws CategoryNotFoundException
+     */
+    public function update(CategoryData $categoryData, Category $category): void
     {
-        $categoryId = (int)$request->category_id;
-
-        $category = $this->categoryRepository->getById($categoryId);
-
-        if($category === null){
-            throw  new CategoryNotFoundException();
+        if ($category->name !== $categoryData->name) {
+            $existedCategory = $this->categoryRepository->getByName($categoryData->name);
+            if ($existedCategory !== null) {
+                throw new CategoryNotFoundException("Category with name '{$categoryData->name}' already exists.");
+            }
         }
-         $category->delete();
+
+        $category->update([
+            'name' => $categoryData->name,
+            'status' => $categoryData->status,
+        ]);
+    }
+
+    public function delete(Category $category): void
+    {
+        $category->delete();
     }
 }

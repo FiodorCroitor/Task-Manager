@@ -10,8 +10,9 @@ class PrepaymentDataMapper
     public function mapFromRequestToNormalized(PrepaymentRequest $request): PrepaymentData
     {
         return new PrepaymentData(
-            $request->productId,
-            $request->userId,
+            $request->user_id,
+            $request->payout_id,
+            $request->amount,
         );
     }
 }

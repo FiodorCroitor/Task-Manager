@@ -25,11 +25,11 @@ class UserRepository
             ])
             ->paginate(self::COUNT_OF_PAGINATION);
     }
-   public function getFirstByEmailWhereNotUserId(string $email, int $userId): ?User
+   public function getFirstByEmailWhereNotUserId(string $email, int $user_id): ?User
    {
        return User::query()
            ->where('email', $email)
-           ->whereNot('id', $userId)
+           ->whereNot('id', $user_id)
            ->first();
    }
    public function getFirstByEmail(string $email): ?User
@@ -45,9 +45,9 @@ class UserRepository
     {
         return User::find($id);
     }
-    public function getFirstByUserName(string $userName): ?User
+    public function getFirstByUserName(string $name): ?User
     {
-        return User::where('name', $userName)->first();
+        return User::where('name', $name)->first();
     }
     public function getLast(): ?User
     {
@@ -56,13 +56,6 @@ class UserRepository
     public function getAll()
     {
         return User::query()->get();
-    }
-    public function getByUserNameOrEmail(string $field): ?User
-    {
-        return User::where('name', $field)
-            ->orWhere('email', $field)
-            ->first();
-
     }
     public function getByEmail(string $email): ?User
     {

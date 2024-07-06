@@ -2,7 +2,7 @@
 @section('title' , 'Задачи')
 @section('body')
     <h2>Добавить продукт</h2>
-    <form action="{{route('products.store')}}" method="POST">
+    <form action="{{route('products.store')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <label for="employee">Задача:</label>
         <input type="text" id="name" name="name" required>
@@ -32,7 +32,7 @@
                 <label class="form-label">Фотографии к задаче</label>
                 <div class="form-control-wrap">
                     <div class="form-file">
-                        <input type="file" name="attachments[]" multiple="" class="form-file-input"
+                        <input type="file" name="attachments[]" multiple=""  class="form-file-input"
                                id="attachments[]">
                     </div>
                 </div>

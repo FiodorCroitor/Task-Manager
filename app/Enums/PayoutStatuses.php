@@ -6,9 +6,9 @@ namespace App\Enums;
 
 enum PayoutStatuses: string
 {
-    case ACTIVE = 'Активно';
-    case INACTIVE = 'Неактивно';
-    case FINISHED = 'Закончено/Ожидание оплаты';
+    case ACTIVE = 'активно';
+    case INACTIVE = 'неактивно';
+    case FINISHED = 'закончено/ожидание оплаты';
 
 
     public static function getAll(): array

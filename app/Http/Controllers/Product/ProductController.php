@@ -42,6 +42,7 @@ final class ProductController extends Controller
 
     public function create()
     {
+
         $statuses = ProductStatuses::getAll();
         $categories = $this->categoryRepository->getAll();
         return view('v1.product.create', compact('categories', 'statuses'));
@@ -94,6 +95,7 @@ final class ProductController extends Controller
         } catch (ProductNotFoundException $e) {
             throw new ProductNotFoundException();
         }
+
 
     }
     public function deleteProductMedia(ProductDeleteMediaRequest $request, Product $product)

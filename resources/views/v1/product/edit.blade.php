@@ -2,7 +2,7 @@
 @section('title' , 'Задачи')
 @section('body')
     <h2>Редактировать задачу</h2>
-    <form action="{{route('products.update' , $product)}}" method="POST">
+    <form action="{{route('products.update' , $product)}}" method="POST" enctype="multipart/form-data">
         @csrf
         <label for="employee">Задача:</label>
         <input type="text" id="name" name="name" value="{{$product->name}}" required>

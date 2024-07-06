@@ -6,8 +6,8 @@ namespace App\Enums;
 
 enum CategoryStatuses: string
 {
-    case Inactive = 'inactive';
-    case Active = 'active';
+    case Inactive = 'неактивно';
+    case Active = 'активно';
 
     public static function getAll(): array
     {

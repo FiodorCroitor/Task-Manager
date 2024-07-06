@@ -6,11 +6,11 @@ namespace App\Enums;
 
 
 enum ProductStatuses:string {
-    case ACTIVE = 'Активно';
-    case INACTIVE = 'Неактивно';
-    case PAUSED = 'Приостановлено';
-    case CANCELED = 'Отменено';
-    case FINISHED = 'Закончено';
+    case ACTIVE = 'активно';
+    case INACTIVE = 'неактивно';
+    case PAUSED = 'приостановлено';
+    case CANCELED = 'отменено';
+    case FINISHED = 'закончено';
 
 
     public static function   getAll(): array

@@ -21,6 +21,7 @@ class Product extends Model implements HasMedia
             'description',
             'price',
             'status',
+            'attachments[]'
         ];
 
     protected $casts = [

@@ -11,22 +11,14 @@
                 <div class="nk-tb-col"><span class="sub-text">Описание задачи:{{$product->description}}</span></div>
                 <div class="nk-tb-col"><span class="sub-text">Статус задачи:{{$product->status}}</span></div>
                 @foreach($product->getMedia('media') as $image)
+                    <div class="nk-tb-col"><span class="sub-text">Изображение:<img src="{{$image->getUrl()}}"></span></div>
                     <div class="col-sm-6 col-lg-4 col-xxl-3" id="model-media-{{$image->id}}">
                         <div class="gallery card card-bordered">
-                            <a class="gallery-image popup-image" href="{{$image->getUrl()}}">
-                                <img class="w-100 rounded-top" src="{{$image->getUrl()}}" alt="">
-                            </a>
                             <div class="gallery-body card-inner align-center justify-between flex-wrap g-2">
                                 <div class="user-card">
                                     <div class="user-info">
                                         <span class="lead-text">#{{$image->id}} - {{$image->name}}</span>
                                     </div>
-                                </div>
-                                <div>
-                                    <a id="model-media-delete-{{$image->id}}" href="#" data-id="{{$image->id}}"
-                                       data-model-id="{{$product->id}}"
-                                       class="product-media-delete btn btn-p-0 btn-nofocus" title="Удалить"><em
-                                            class="icon ni ni-trash"></em></a>
                                 </div>
                             </div>
                         </div>

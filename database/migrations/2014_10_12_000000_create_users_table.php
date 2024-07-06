@@ -21,6 +21,7 @@ return new class extends Migration
             //$table->string('salary_bid')->nullable()->default(null);
             //$table->string('salary')->nullable()->default(null);
             $table->string('prepayment_sum')->nullable()->default(null);
+            $table->boolean('active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'prepayment_sum',
+        'role',
     ];
 
     /**
@@ -53,6 +54,10 @@ class User extends Authenticatable
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
+    }
+    public function userType(): HasOne
+    {
+        return $this->hasOne(UserType::class , 'type_id');
     }
     public function prepayments(): BelongsTo
     {

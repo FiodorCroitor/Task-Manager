@@ -11,7 +11,7 @@
                 <div class="nk-tb-col"><span class="sub-text">Описание задачи:{{$product->description}}</span></div>
                 <div class="nk-tb-col"><span class="sub-text">Статус задачи:{{$product->status}}</span></div>
                 @foreach($product->getMedia('media') as $image)
-                    <div class="nk-tb-col"><span class="sub-text">Изображение:<img src="{{$image->getUrl()}}"></span></div>
+                    <div class="nk-tb-col"><span class="sub-text">Изображение:<img src="{{$image->getUrl()}}" alt="photo"></span></div>
                     <div class="col-sm-6 col-lg-4 col-xxl-3" id="model-media-{{$image->id}}">
                         <div class="gallery card card-bordered">
                             <div class="gallery-body card-inner align-center justify-between flex-wrap g-2">
